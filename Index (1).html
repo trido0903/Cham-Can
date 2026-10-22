@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>In4 Selector</title>
+  <style>
+    :root, [data-theme="dark"] {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --card2: #334155;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --accent: #2dd4bf;
+      --accent2: #22d3ee;
+      --canva: #14b8a6;
+      --drive: #3b82f6;
+      --sales: #f59e0b;
+      --section-canva-bg: #0f766e;
+      --section-drive-bg: #1d4ed8;
+      --section-sales-bg: #b45309;
+      --section-fg: #ffffff;
+      --border: rgba(255,255,255,0.08);
+      --shadow: 0 2px 16px rgba(0,0,0,0.3);
+    }
+    [data-theme="light"] {
+      --bg: #f0fdfa;
+      --card: #ffffff;
+      --card2: #f1f5f9;
+      --text: #134e4a;
+      --muted: #64748b;
+      --accent: #0d9488;
+      --accent2: #0891b2;
+      --canva: #0d9488;
+      --drive: #2563eb;
+      --sales: #d97706;
+      --section-canva-bg: #0f766e;
+      --section-drive-bg: #1d4ed8;
+      --section-sales-bg: #b45309;
+      --section-fg: #ffffff;
+      --border: #99f6e4;
+      --shadow: 0 2px 14px rgba(15, 118, 110, 0.08);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 16px;
+      padding-bottom: 48px;
+      transition: background 0.25s, color 0.25s;
+    }
+    .container { max-width: 480px; margin: 0 auto; }
+
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+      padding-top: 8px;
+      position: relative;
+    }
+    header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.03em;
+    }
+    header p {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .sync-status {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      background: var(--card2);
+      color: var(--muted);
+    }
+    .sync-status.online { background: #dcfce7; color: #166534; }
+    .sync-status.loading { background: #dbeafe; color: #1e40af; }
+    .sync-status.offline { background: #fef3c7; color: #92400e; }
+    .sync-status.error { background: #fee2e2; color: #991b1b; }
+    [data-theme="dark"] .sync-status.online { background: #14532d; color: #dcfce7; }
+    [data-theme="dark"] .sync-status.loading { background: #1e3a8a; color: #dbeafe; }
+    [data-theme="dark"] .sync-status.offline { background: #78350f; color: #fef3c7; }
+    [data-theme="dark"] .sync-status.error { background: #7f1d1d; color: #fee2e2; }
+
+    .theme-btn {
+      position: absolute;
+      right: 0;
+      top: 8px;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      font-size: 1.15rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .theme-btn:active { transform: scale(0.92); }
+
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      transition: background 0.25s, border-color 0.25s;
+    }
+
+    .form-group { margin-bottom: 14px; }
+    .form-group:last-child { margin-bottom: 0; }
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.72rem;
+      margin-bottom: 7px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    select {
+      width: 100%;
+      padding: 13px 40px 13px 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 0.95rem;
+      background: var(--card2);
+      color: var(--text);
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.25s;
+    }
+    select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    select:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .result { display: none; }
+    .result.show { display: block; animation: up 0.25s ease; }
+    @keyframes up {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .proj-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .proj-name {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+    .tag {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: #0f172a;
+      background: var(--accent);
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    .section {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 6px 10px;
+      border-radius: 7px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.045em;
+      color: var(--section-fg);
+      margin-bottom: 10px;
+      margin-top: 16px;
+      box-shadow: 0 2px 5px rgba(15, 23, 42, 0.18);
+    }
+    .section.canva-section { background: var(--section-canva-bg); }
+    .section.drive-section { background: var(--section-drive-bg); }
+    .section.sales-section { background: var(--section-sales-bg); }
+    .section:first-of-type { margin-top: 0; }
+
+    .files { display: grid; gap: 8px; }
+
+    .file {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      transition: background 0.15s;
+    }
+    .file:active { opacity: 0.9; }
+    .file-info { flex: 1; min-width: 0; }
+    .file-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 9px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-decoration: none;
+      white-space: nowrap;
+      color: #fff;
+      transition: opacity 0.15s, transform 0.1s;
+      min-width: 78px;
+    }
+    .btn:active { transform: scale(0.96); opacity: 0.85; }
+    .btn.canva { background: var(--canva); }
+    .btn.drive { background: var(--drive); }
+
+    .sales-box {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+    .btn.sales {
+      width: 100%;
+      padding: 13px;
+      font-size: 0.9rem;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      min-width: auto;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 36px 16px;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+    .empty span {
+      display: block;
+      font-size: 1.6rem;
+      margin-bottom: 8px;
+      opacity: 0.5;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.7rem;
+      color: var(--muted);
+      opacity: 0.7;
+    }
+
+    @media (max-width: 400px) {
+      body { padding: 12px; }
+      .card { padding: 14px; }
+      .btn { min-width: 70px; padding: 7px 11px; font-size: 0.74rem; }
+      .theme-btn { width: 36px; height: 36px; font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>In4 Selector</h1>
+      <p>Cụm → Dự án → Mở file</p>
+      <div class="sync-status offline" id="syncStatus" role="status" aria-live="polite">Chưa kết nối Google Sheet</div>
+      <button class="theme-btn" id="themeBtn" title="Đổi giao diện">🌙</button>
+    </header>
+
+    <div class="card">
+      <div class="form-group">
+        <label for="cum">Cụm</label>
+        <select id="cum">
+          <option value="">Chọn cụm...</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="duan">Dự án</label>
+        <select id="duan" disabled>
+          <option value="">Chọn dự án...</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card result" id="result">
+      <div class="proj-header">
+        <span class="proj-name" id="projName"></span>
+        <span class="tag" id="tag"></span>
+      </div>
+
+      <div id="contentArea"></div>
+
+      <div class="sales-box" id="salesBox" style="display:none">
+        <div class="section sales-section">Sales Kit</div>
+        <a class="btn sales" id="salesBtn" href="#" target="_blank" rel="noopener">Mở Sales Kit</a>
+      </div>
+    </div>
+
+    <div class="card" id="hint">
+      <div class="empty">
+        <span>📂</span>
+        Chọn Cụm và Dự án để xem file
+      </div>
+    </div>
+
+    <footer>Canva + Drive</footer>
+  </div>
+
+  <script>
+    const themeBtn = document.getElementById('themeBtn');
+    const html = document.documentElement;
+    let savedTheme = 'dark';
+    try {
+      const storedTheme = localStorage.getItem('in4-theme');
+      if (storedTheme === 'dark' || storedTheme === 'light') savedTheme = storedTheme;
+    } catch (_) {
+      // Continue with the default theme when browser storage is unavailable.
+    }
+    html.setAttribute('data-theme', savedTheme);
+    themeBtn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+    themeBtn.addEventListener('click', () => {
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      try { localStorage.setItem('in4-theme', next); } catch (_) { /* Theme still changes for this page view. */ }
+      themeBtn.textContent = next === 'dark' ? '☀️' : '🌙';
+    });
+
+    // Sales Kit theo cụm (dùng chung)
+    let SALES_KIT = {
+      "Cụm 3 (Biển Nchung)": {
+        "1. BLANCA CITY": { name: "1. BLANCA CITY", url: "https://drive.google.com/drive/u/0/folders/1khoSe5rQwMEROvIJ0bChvh84Ae_GoK2u" },
+        "2. MAIA": { name: "2. MAIA", url: "https://drive.google.com/drive/folders/1qNWMeJLLum8BzIr0mVbC2zU_8BfWBydY?usp=drive_link" }
+      },
+      "Cụm 4 (VCG)": {
+        "06. VINHOMES GREEN PARADISE": { name: "06. VINHOMES GREEN PARADISE", url: "https://drive.google.com/drive/folders/1068O-Sn6sBlpqb0DLmnP8s9PRj-12LqF" }
+      },
+      "Cụm 6 (HVB)": {
+        "08. VINHOMES HẢI VÂN BAY": { name: "08. VINHOMES HẢI VÂN BAY", url: "https://drive.google.com/drive/folders/1MN00cpZ7YgR1zL-ixCEgE4j4FyqYk5vQ" }
+      }
+    };
+
+    let DATA = {
+  "Cụm 3 (Biển Nchung)": {
+    "color": "#38bdf8",
+    "projects": {
+      "BEACHTRO": {
+        "salesKey": "1. BLANCA CITY",
+        "sections": [
+          {
+            "title": "CCCT Canva",
+            "kind": "canva",
+            "items": [
+              {
+                "name": "BEACHTRO",
+                "url": "https://canva.link/rh4hig1xjk08a8n"
+              }
+            ]
+          },
+          {
+            "title": "Mẫu nhà - Phối cảnh",
+            "kind": "drive",
+            "items": [
+              {
+                "name": "2. ẢNH NHÀ MẪU",
+                "url": "https://drive.google.com/drive/folders/16Y7RfuRDL8GHnnWd6lC3llew35wtZiMz?usp=drive_link"
+              }
+            ]
+          }
+        ]
+      },
+      "CASA": {
+        "salesKey": "1. BLANCA CITY",
+        "sections": [
+          {
+            "title": "Layout căn hộ",
+            "kind": "drive",
+            "items": [
+              {
+                "name": "3. Layout Casa ĐL",
+                "url": "https://drive.google.com/drive/folders/1i7H-qhUoqv7kNwZM-kcLLOxHWhYD2WM4?usp=drive_link"
+              },
+              {
+                "name": "4. Layout Casa SL",
+                "url": "https://drive.google.com/drive/folders/1jSgb9sVDZBWCQzL8ytyvqIucdaxzUiv3?usp=drive_link"
+              },
+              {
+                "name": "5. Layout Town House",
+                "url": "https://drive.google.com/drive/folders/1UCMAkcxYgIWAI9AHgu5FrQcD-93-wvjO?usp=drive_link"
+              }
+            ]
+          },
+          {
+            "title": "Phối cảnh",
+            "kind": "drive",
+            "items": [
+              {
+                "name": "Phối cảnh Casa ĐL - GĐ2 / Casa SL - GĐ2",
+                "url": "https://drive.google.com/drive/folders/10jonjxTFXwqoMl-IDGicQNpoXYYJsWOT?usp=drive_link"
+              }
+            ]
+          }
+        ]
+      },
+      "MAIA (Bình Yên)": {
+        "salesKey": "2. MAIA",
+        "sections": [
+          {
+            "title": "CCCT Canva",
+            "kind": "canva",
+            "items": [
+              {
+                "name": "MAIA Bình Yên",
+                "url": "https://canva.link/m9lkikjrmrni288"
+              }
+            ]
+          }
+        ]
+      },
+      "MAIA (Vui Vẻ)": {
+        "salesKey": "2. MAIA",
+        "sections": []
+      }
+    }
+  },
+  "Cụm 4 (VCG)": {
+    "color": "#34d399",
+    "projects": {
+      "Vịnh Ngọc": {
+        "salesKey": "06. VINHOMES GREEN PARADISE",
+        "sections": [
+          {
+            "title": "CCCT Canva",
+            "kind": "canva",
+            "items": [
+              {
+                "name": "Vịnh Ngọc",
+                "url": "https://canva.link/o6olkb7yoni7bm2"
+              }
+            ]
+          },
+          {
+            "title": "Mẫu nhà - Phối cảnh",
+            "kind": "drive",
+            "items": [
+              {
+                "name": "B.3. MẪU NHÀ - PHỐI CẢNH",
+                "url": "https://drive.google.com/drive/folders/1ZKhfqBGW28vqbsSx1hd_N4Wf9Z5nOIGI?usp=drive_link"
+              }
+            ]
+          }
+        ]
+      },
+      "Vịnh Tiên": {
+        "salesKey": "06. VINHOMES GREEN PARADISE",
+        "sections": [
+          {
+            "title": "CCCT Canva",
+            "kind": "canva",
+            "items": [
+              {
+                "name": "Vịnh Tiên",
+                "url": "https://canva.link/fxznms3s7o0v42m"
+              }
+            ]
+          },
+          {
+            "title": "CCTT Canva",
+            "kind": "canva",
+            "items": [
+              {
+                "name": "Vịnh Tiên",
+                "url": "https://canva.link/nh1pdtriqk2qo25"
+              }
+            ]
+          },
+          {
+            "title": "Mẫu nhà - Phối cảnh",
+            "kind": "drive",
+            "items": [
+              {
+                "name": "Mẫu Nhà",
+                "url": "https://drive.google.com/drive/folders/1yE0W7ECZzfhbMXIWlVgJ2SIr4CUCYrwJ?usp=drive_link"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Cụm 6 (HVB)": {
+    "color": "#f87171",
+    "projects": {
+      "Bạch Vân": {
+        "salesKey": "08. VINHOMES HẢI VÂN BAY",
+        "sections": [
+          {
+            "title": "CCCT Canva",
+            "kind": "canva",
+            "items": [
+              {
+                "name": "Bạch Vân",
+                "url": "https://canva.link/7cnyciled100ele"
+              }
+            ]
+          },
+          {
+            "title": "Mẫu nhà - Phối cảnh",
+            "kind": "drive",
+            "items": [
+              {
+                "name": "Bạch Vân",
+                "url": "https://drive.google.com/drive/folders/1RFVpl_CGfL322y2QXRaNKwQJJ--nzQFP?usp=sharing"
+              }
+            ]
+          }
+        ]
+      },
+      "Đảo Ngọc": {
+        "salesKey": "08. VINHOMES HẢI VÂN BAY",
+        "sections": [
+          {
+            "title": "Mẫu nhà - Phối cảnh",
+            "kind": "drive",
+            "items": [
+              {
+                "name": "Đảo Ngọc",
+                "url": "https://drive.google.com/drive/folders/1-MVPWY922aYeuRpEhoA4LC6hNKV15aXB?usp=drive_link"
+              }
+            ]
+          }
+        ]
+      },
+      "Vịnh Mây": {
+        "salesKey": "08. VINHOMES HẢI VÂN BAY",
+        "sections": [
+          {
+            "title": "Mẫu nhà - Phối cảnh",
+            "kind": "drive",
+            "items": [
+              {
+                "name": "Vịnh Mây",
+                "url": "https://drive.google.com/drive/folders/1LagNe0F31x9hrRv_Xl2m_3Vbrz5q0C5U?usp=sharing"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+};
+
+    const cumEl = document.getElementById('cum');
+    const duanEl = document.getElementById('duan');
+    const resultEl = document.getElementById('result');
+    const hintEl = document.getElementById('hint');
+    const projNameEl = document.getElementById('projName');
+    const tagEl = document.getElementById('tag');
+    const contentArea = document.getElementById('contentArea');
+    const salesBox = document.getElementById('salesBox');
+    const salesBtn = document.getElementById('salesBtn');
+    const syncStatusEl = document.getElementById('syncStatus');
+    let syncInProgress = false;
+    let lastSuccessfulSync = 0;
+
+    function setSyncStatus(message, state) {
+      syncStatusEl.textContent = message;
+      syncStatusEl.className = 'sync-status ' + state;
+    }
+
+    function populateSelectors(keepCluster, keepProject) {
+      const selectedCluster = keepCluster || cumEl.value;
+      const selectedProject = keepProject || duanEl.value;
+      cumEl.innerHTML = '<option value="">Chọn cụm...</option>';
+      Object.keys(DATA).forEach(cluster => {
+        const option = document.createElement('option');
+        option.value = cluster;
+        option.textContent = cluster;
+        cumEl.appendChild(option);
+      });
+
+      if (selectedCluster && DATA[selectedCluster]) {
+        cumEl.value = selectedCluster;
+        populateProjects(selectedCluster, selectedProject);
+      } else {
+        duanEl.innerHTML = '<option value="">Chọn dự án...</option>';
+        duanEl.disabled = true;
+        hideResult();
+      }
+    }
+
+    function populateProjects(cluster, selectedProject) {
+      duanEl.innerHTML = '<option value="">Chọn dự án...</option>';
+      duanEl.disabled = !cluster || !DATA[cluster];
+      if (!cluster || !DATA[cluster]) { hideResult(); return; }
+      Object.keys(DATA[cluster].projects).forEach(project => {
+        const option = document.createElement('option');
+        option.value = project;
+        option.textContent = project;
+        duanEl.appendChild(option);
+      });
+      if (selectedProject && DATA[cluster].projects[selectedProject]) {
+        duanEl.value = selectedProject;
+        renderSelectedProject();
+      } else {
+        hideResult();
+      }
+    }
+
+    cumEl.addEventListener('change', () => populateProjects(cumEl.value, ''));
+
+    function escapeHtml(value) {
+      return String(value == null ? '' : value).replace(/[&<>"']/g, char => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[char]));
+    }
+
+    function safeHttpUrl(value) {
+      try {
+        const parsed = new URL(String(value || ''), window.location.href);
+        return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '';
+      } catch (_) { return ''; }
+    }
+
+    function renderSection(sec) {
+      if (!sec.items || sec.items.length === 0) return '';
+      const btnClass = sec.kind === 'canva' ? 'canva' : 'drive';
+      const btnText = sec.kind === 'canva' ? 'Canva' : 'Drive';
+      return `
+        <div class="section ${sec.kind === 'canva' ? 'canva-section' : 'drive-section'}">${escapeHtml(sec.title)}</div>
+        <div class="files">
+          ${sec.items.map(f => {
+            const url = safeHttpUrl(f.url);
+            if (!url) return '';
+            return `
+              <div class="file">
+                <div class="file-info">
+                  <div class="file-name">${escapeHtml(f.name)}</div>
+                </div>
+                <a class="btn ${btnClass}" href="${escapeHtml(url)}" target="_blank" rel="noopener">${btnText}</a>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function renderSelectedProject() {
+      const cluster = cumEl.value;
+      const project = duanEl.value;
+      const item = cluster && DATA[cluster] && DATA[cluster].projects[project];
+      if (!item) { hideResult(); return; }
+
+      hintEl.style.display = 'none';
+      resultEl.classList.add('show');
+      projNameEl.textContent = project;
+      tagEl.textContent = cluster;
+      tagEl.style.background = DATA[cluster].color || 'var(--accent)';
+
+      let html = '';
+      (item.sections || []).forEach(section => { html += renderSection(section); });
+      contentArea.innerHTML = html || '<div class="empty" style="padding:20px">Chưa có file</div>';
+
+      const sales = SALES_KIT[cluster] && SALES_KIT[cluster][item.salesKey];
+      const salesUrl = sales && safeHttpUrl(sales.url);
+      if (sales) {
+        salesBox.style.display = 'block';
+        salesBtn.textContent = '📂  ' + sales.name + (salesUrl ? '' : ' (chưa có link hợp lệ)');
+        salesBtn.href = salesUrl || '#';
+        salesBtn.style.opacity = salesUrl ? '1' : '0.5';
+        salesBtn.style.pointerEvents = salesUrl ? 'auto' : 'none';
+      } else {
+        salesBox.style.display = 'none';
+      }
+    }
+
+    duanEl.addEventListener('change', renderSelectedProject);
+
+    function refreshFromSheet() {
+      if (!(typeof google !== 'undefined' && google.script && google.script.run)) {
+        setSyncStatus('Dữ liệu đang lưu trong file · cần Apps Script để đồng bộ', 'offline');
+        return;
+      }
+      if (syncInProgress) return;
+      syncInProgress = true;
+      setSyncStatus('Đang kiểm tra thay đổi trên Sheet…', 'loading');
+      google.script.run
+        .withSuccessHandler(payload => {
+          syncInProgress = false;
+          if (!payload || !payload.data || typeof payload.data !== 'object') {
+            setSyncStatus('Sheet trả về dữ liệu không hợp lệ · giữ dữ liệu gần nhất', 'error');
+            return;
+          }
+          const changed = JSON.stringify(DATA) !== JSON.stringify(payload.data)
+            || JSON.stringify(SALES_KIT) !== JSON.stringify(payload.salesKit || {});
+          if (changed) {
+            const previousCluster = cumEl.value;
+            const previousProject = duanEl.value;
+            DATA = payload.data;
+            SALES_KIT = payload.salesKit || {};
+            populateSelectors(previousCluster, previousProject);
+          }
+          lastSuccessfulSync = Date.now();
+          const time = new Date(lastSuccessfulSync).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+          setSyncStatus('Đã đồng bộ từ Sheet · ' + time, 'online');
+        })
+        .withFailureHandler(() => {
+          syncInProgress = false;
+          setSyncStatus(lastSuccessfulSync
+            ? 'Sheet chưa phản hồi · đang giữ dữ liệu gần nhất'
+            : 'Chưa kết nối được Google Sheet', 'error');
+        })
+        .getLiveData();
+    }
+
+    populateSelectors('', '');
+    refreshFromSheet();
+    window.setInterval(refreshFromSheet, 30000);
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) refreshFromSheet();
+    });
+
+    function hideResult() {
+      resultEl.classList.remove('show');
+      hintEl.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
